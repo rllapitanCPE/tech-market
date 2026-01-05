@@ -32,19 +32,26 @@ export async function GET() {
   }
 }
 
-
 export async function PUT(req: Request) {
-  await dbConnect();
-  const body = await req.json();
-  const { _id, ...updateData } = body;
-  const updated = await Product.findByIdAndUpdate(_id, updateData, { new: true });
-  return NextResponse.json(updated);
+  try {
+    await dbConnect();
+    const body = await req.json();
+    const { _id, ...updateData } = body; // Pulls the ID to find the right item
+    const updated = await Product.findByIdAndUpdate(_id, updateData, { new: true });
+    return NextResponse.json(updated);
+  } catch (error) {
+    return NextResponse.json({ error: "Update failed" }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: Request) {
-  await dbConnect();
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
-  await Product.findByIdAndDelete(id);
-  return NextResponse.json({ message: "Deleted" });
+  try {
+    await dbConnect();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id'); // Gets the ID from the URL
+    await Product.findByIdAndDelete(id);
+    return NextResponse.json({ message: "Product deleted" });
+  } catch (error) {
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+  }
 }
