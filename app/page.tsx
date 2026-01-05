@@ -12,7 +12,7 @@ export default function Home() {
       <nav className="p-8 flex justify-between items-center border-b border-white/5 bg-black/60 backdrop-blur-2xl sticky top-0 z-50">
         <div>
            <h1 className="text-3xl md:text-5xl font-black italic tracking-tighter text-cyan-400">TECHTONIC SHOP</h1>
-           <p className="text-[9px] tracking-[0.6em] text-slate-500 uppercase ml-1">By Leslie • Seismic Systems</p>
+           <p className="text-[15px] tracking-[0.6em] text-slate-500 uppercase ml-1">By Leslie • Seismic Systems</p>
         </div>
       </nav>
 
