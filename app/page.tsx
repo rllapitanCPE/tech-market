@@ -14,7 +14,7 @@ export default function Home() {
       <header className="border-b border-cyan-500/30 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto p-6 flex justify-between items-center">
           <h1 className="text-4xl font-black tracking-tighter italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
-            TECHTONIC SHOP  
+            TECHTONIC SHOP BY LESLIE  
           </h1>
           <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]"></div>
         </div>
@@ -37,7 +37,7 @@ export default function Home() {
                 
                 <a href={p.shopeeLink} target="_blank" className="relative inline-flex items-center justify-center w-full px-6 py-3 overflow-hidden font-bold text-white rounded-lg bg-slate-800 group/btn">
                   <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-cyan-500 rounded-full group-hover/btn:w-full group-hover/btn:h-56"></span>
-                  <span className="relative">ORDER NOW</span>
+                  <span className="relative">CHECK OUT</span>
                 </a>
               </div>
             </div>
