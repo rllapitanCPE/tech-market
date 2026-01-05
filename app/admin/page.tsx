@@ -14,14 +14,12 @@ export default function AdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
     const response = await fetch('/api/products', {
-      method: method,
+      method: isEditing ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     });
     if (response.ok) {
-      alert("System Updated");
       setForm({ _id: '', name: '', price: '', image: '', shopeeLink: '' });
       setIsEditing(false);
       fetchProducts();
@@ -29,41 +27,38 @@ export default function AdminPage() {
   };
 
   const deleteProduct = async (id: string) => {
-    if (confirm("Permanently delete this unit from TechTonic?")) {
+    if (confirm("Execute deletion protocol for this unit?")) {
       await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
       fetchProducts();
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-cyan-400 p-6 font-mono" style={{backgroundImage: 'linear-gradient(to right, #081216 1px, transparent 1px), linear-gradient(to bottom, #081216 1px, transparent 1px)', backgroundSize: '40px 40px'}}>
-      <div className="max-w-4xl mx-auto border-l border-r border-cyan-900/50 min-h-screen px-8">
-        <div className="flex justify-between items-end mb-10 pt-10 border-b border-cyan-500 pb-4">
-          <h1 className="text-4xl font-black italic">TECHTONIC COMMAND</h1>
-          <p className="text-sm font-bold bg-cyan-950 px-3 py-1 border border-cyan-500 rounded">BY LESLIE</p>
+    <div className="min-h-screen bg-black text-cyan-400 p-8 font-mono">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-12 border-b-2 border-cyan-900 pb-6">
+          <h1 className="text-3xl font-black italic tracking-widest">TECHTONIC ADMIN</h1>
+          <span className="bg-cyan-500 text-black px-4 py-1 font-black text-xs">BY LESLIE</span>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-slate-950 border border-cyan-500/30 p-6 rounded-sm mb-10 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
-          <p className="text-xs uppercase mb-4 tracking-widest text-white">{isEditing ? "> Modifying Plate Data" : "> Initializing New Plate"}</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="PRODUCT NAME" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
-            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="PRICE" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required />
-            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="SHOPEE URL" value={form.shopeeLink} onChange={e => setForm({...form, shopeeLink: e.target.value})} required />
-            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="IMAGE URL" value={form.image} onChange={e => setForm({...form, image: e.target.value})} required />
-          </div>
-          <button type="submit" className="w-full mt-4 bg-cyan-500 text-black font-black py-3 hover:bg-white transition-colors">
-            {isEditing ? "UPDATE RECORDS" : "DEPLOY TO DATABASE"}
-          </button>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-900/40 p-8 rounded-2xl border border-cyan-900/50 mb-12 shadow-[0_0_50px_rgba(6,182,212,0.05)]">
+           <input className="bg-black border border-cyan-900 p-4 rounded text-white focus:border-cyan-400 outline-none" placeholder="UNIT NAME" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
+           <input className="bg-black border border-cyan-900 p-4 rounded text-white focus:border-cyan-400 outline-none" placeholder="PRICE (NUMBERS ONLY)" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required />
+           <input className="bg-black border border-cyan-900 p-4 rounded text-white focus:border-cyan-400 outline-none md:col-span-2" placeholder="SHOPEE URL" value={form.shopeeLink} onChange={e => setForm({...form, shopeeLink: e.target.value})} required />
+           <input className="bg-black border border-cyan-900 p-4 rounded text-white focus:border-cyan-400 outline-none md:col-span-2" placeholder="IMAGE SOURCE URL" value={form.image} onChange={e => setForm({...form, image: e.target.value})} required />
+           <button className="md:col-span-2 bg-cyan-500 text-black font-black py-4 rounded hover:bg-white transition-all uppercase tracking-widest">
+             {isEditing ? "Overwrite Records" : "Deploy Unit to Grid"}
+           </button>
         </form>
 
         <div className="space-y-4">
-          <h2 className="text-xl font-bold italic mb-6">PLATE INVENTORY</h2>
+          <h2 className="text-sm font-bold tracking-[0.4em] text-slate-500 mb-6 uppercase italic">Active Inventory Status</h2>
           {products.map((p: any) => (
-            <div key={p._id} className="flex justify-between items-center bg-slate-950 border-l-4 border-cyan-700 p-4 hover:border-cyan-400 transition-all">
-              <span className="font-bold tracking-widest">{p.name}</span>
+            <div key={p._id} className="flex justify-between items-center bg-slate-950 border border-cyan-900/30 p-5 rounded-lg hover:border-cyan-500 transition-colors">
+              <span className="font-bold text-slate-200">{p.name}</span>
               <div className="flex gap-4">
-                <button onClick={() => {setForm(p); setIsEditing(true);}} className="text-xs border border-cyan-900 px-4 py-1 hover:bg-cyan-900 transition text-white">EDIT</button>
-                <button onClick={() => deleteProduct(p._id)} className="text-xs border border-red-900 px-4 py-1 hover:bg-red-900 transition text-red-500">DELETE</button>
+                <button onClick={() => {setForm(p); setIsEditing(true);}} className="text-xs bg-cyan-900/20 px-4 py-2 rounded border border-cyan-900 text-cyan-400 hover:bg-cyan-900">EDIT</button>
+                <button onClick={() => deleteProduct(p._id)} className="text-xs bg-red-900/20 px-4 py-2 rounded border border-red-900 text-red-500 hover:bg-red-900">DELETE</button>
               </div>
             </div>
           ))}
