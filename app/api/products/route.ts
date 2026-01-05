@@ -4,25 +4,30 @@ import Product from '@/models/Product';
 
 export async function POST(req: Request) {
   try {
-    await dbConnect(); // Ensure connection is established
-    const body = await req.json();
+    await dbConnect(); // Open the tunnel
+    const body = await req.json(); // Wait for the data from your form
     
-    // This creates the product in your MongoDB collection
-    const newProduct = await Product.create(body); 
-    
+    // Explicitly create and wait for the save
+    const newProduct = await Product.create({
+      name: body.name,
+      price: body.price,
+      image: body.image,
+      shopeeLink: body.shopeeLink
+    });
+
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {
-    console.error("Save Error:", error);
-    return NextResponse.json({ error: "Database Save Failed" }, { status: 500 });
+    console.error("DEPLOYMENT CRASH:", error);
+    return NextResponse.json({ error: "Database rejected the save" }, { status: 500 });
   }
 }
 
 export async function GET() {
   try {
     await dbConnect();
-    const products = await Product.find({}).sort({ _id: -1 });
+    const products = await Product.find({}).sort({ createdAt: -1 });
     return NextResponse.json(products);
   } catch (error) {
-    return NextResponse.json({ error: "Fetch Failed" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }
