@@ -4,10 +4,10 @@ import Product from '@/models/Product';
 
 export async function POST(req: Request) {
   try {
-    await dbConnect(); // Open the tunnel
-    const body = await req.json(); // Wait for the data from your form
+    await dbConnect(); //
+    const body = await req.json();
     
-    // Explicitly create and wait for the save
+    // Explicitly using .create and awaiting the result
     const newProduct = await Product.create({
       name: body.name,
       price: body.price,
@@ -17,17 +17,34 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {
-    console.error("DEPLOYMENT CRASH:", error);
-    return NextResponse.json({ error: "Database rejected the save" }, { status: 500 });
+    console.error("POST ERROR:", error);
+    return NextResponse.json({ error: "Failed to save to MongoDB" }, { status: 500 });
   }
 }
 
 export async function GET() {
   try {
     await dbConnect();
-    const products = await Product.find({}).sort({ createdAt: -1 });
+    const products = await Product.find({}).sort({ _id: -1 });
     return NextResponse.json(products);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
   }
+}
+
+
+export async function PUT(req: Request) {
+  await dbConnect();
+  const body = await req.json();
+  const { _id, ...updateData } = body;
+  const updated = await Product.findByIdAndUpdate(_id, updateData, { new: true });
+  return NextResponse.json(updated);
+}
+
+export async function DELETE(req: Request) {
+  await dbConnect();
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  await Product.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Deleted" });
 }
