@@ -9,8 +9,10 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  await dbConnect();
-  const body = await req.json();
-  const newProduct = await Product.create(body);
-  return NextResponse.json(newProduct);
+  try {
+    await dbConnect();
+    const body = await req.json();
+    const newProduct = await Product.create(body);
+    return NextResponse.json(newProduct);
+  } catch (e) { return NextResponse.json({ error: e }, { status: 500 }); }
 }
