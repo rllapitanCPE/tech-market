@@ -9,10 +9,17 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  try {
-    await dbConnect();
-    const body = await req.json();
-    const newProduct = await Product.create(body);
-    return NextResponse.json(newProduct);
-  } catch (e) { return NextResponse.json({ error: e }, { status: 500 }); }
+  await dbConnect();
+  const body = await req.json();
+  const newProduct = await Product.create(body);
+  return NextResponse.json(newProduct);
+}
+
+// ADD THIS FOR EDITING
+export async function PUT(req: Request) {
+  await dbConnect();
+  const body = await req.json();
+  const { _id, ...updateData } = body;
+  const updatedProduct = await Product.findByIdAndUpdate(_id, updateData, { new: true });
+  return NextResponse.json(updatedProduct);
 }
