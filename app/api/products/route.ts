@@ -13,13 +13,11 @@ export async function POST(req: Request) {
   try {
     await dbConnect();
     const body = await req.json();
-    // Auto-clean the price to ensure the Peso sign works
-    body.price = body.price.toString().replace(/[^\d.,]/g, '');
+    body.price = body.price.toString().replace(/[^\d.,]/g, ''); // Fixes Peso formatting
     const newProduct = await Product.create(body);
     return NextResponse.json(newProduct);
   } catch (error) {
-    console.error("Database Error:", error);
-    return NextResponse.json({ error: "Auth Failure" }, { status: 500 });
+    return NextResponse.json({ error: "DB Auth Fail" }, { status: 500 });
   }
 }
 
