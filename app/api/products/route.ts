@@ -2,45 +2,27 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Product from '@/models/Product';
 
-export const dynamic = 'force-dynamic';
-
-export async function GET() {
-  await dbConnect();
-  return NextResponse.json(await Product.find({}).sort({ _id: -1 }));
-}
-
 export async function POST(req: Request) {
   try {
-    await dbConnect();
+    await dbConnect(); // Ensure connection is established
     const body = await req.json();
-    body.price = body.price.toString().replace(/[^\d.,]/g, ''); // Fixes Peso formatting
-    const newProduct = await Product.create(body);
-    return NextResponse.json(newProduct);
+    
+    // This creates the product in your MongoDB collection
+    const newProduct = await Product.create(body); 
+    
+    return NextResponse.json(newProduct, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "DB Auth Fail" }, { status: 500 });
+    console.error("Save Error:", error);
+    return NextResponse.json({ error: "Database Save Failed" }, { status: 500 });
   }
 }
 
-export async function PUT(req: Request) {
+export async function GET() {
   try {
     await dbConnect();
-    const body = await req.json();
-    const { _id, ...updateData } = body;
-    const updated = await Product.findByIdAndUpdate(_id, updateData, { new: true });
-    return NextResponse.json(updated);
+    const products = await Product.find({}).sort({ _id: -1 });
+    return NextResponse.json(products);
   } catch (error) {
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
-  }
-}
-
-export async function DELETE(req: Request) {
-  try {
-    await dbConnect();
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
-    await Product.findByIdAndDelete(id);
-    return NextResponse.json({ message: "Deleted" });
-  } catch (error) {
-    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+    return NextResponse.json({ error: "Fetch Failed" }, { status: 500 });
   }
 }
