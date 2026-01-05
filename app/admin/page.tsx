@@ -6,7 +6,6 @@ export default function AdminPage() {
   const [form, setForm] = useState({ _id: '', name: '', price: '', image: '', shopeeLink: '' });
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch products to show in the "Edit" list
   const fetchProducts = () => {
     fetch('/api/products').then(res => res.json()).then(data => setProducts(data));
   };
@@ -21,64 +20,51 @@ export default function AdminPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     });
-
     if (response.ok) {
-      alert(isEditing ? "Product Updated!" : "Product Added!");
+      alert("System Updated");
       setForm({ _id: '', name: '', price: '', image: '', shopeeLink: '' });
       setIsEditing(false);
       fetchProducts();
     }
   };
 
-  const startEdit = (p: any) => {
-    setForm(p);
-    setIsEditing(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const deleteProduct = async (id: string) => {
+    if (confirm("Permanently delete this unit from TechTonic?")) {
+      await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
+      fetchProducts();
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-cyan-400 mb-8 border-b border-cyan-900 pb-4">
-          TECHTONIC COMMAND CENTER
-        </h1>
-
-        {/* Form Section */}
-        <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl shadow-2xl mb-12">
-          <h2 className="text-xl font-semibold mb-4 text-blue-400">
-            {isEditing ? "MODIFY UNIT" : "REGISTER NEW UNIT"}
-          </h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input className="bg-slate-800 border-slate-700 p-3 rounded text-white focus:ring-2 focus:ring-cyan-500 outline-none" 
-              placeholder="Product Name" onChange={e => setForm({...form, name: e.target.value})} value={form.name} required />
-            <input className="bg-slate-800 border-slate-700 p-3 rounded text-white focus:ring-2 focus:ring-cyan-500 outline-none" 
-              placeholder="Price (e.g. ₱1,500)" onChange={e => setForm({...form, price: e.target.value})} value={form.price} required />
-            <input className="bg-slate-800 border-slate-700 p-3 rounded text-white focus:ring-2 focus:ring-cyan-500 outline-none" 
-              placeholder="Shopee Link" onChange={e => setForm({...form, shopeeLink: e.target.value})} value={form.shopeeLink} required />
-            <input className="bg-slate-800 border-slate-700 p-3 rounded text-white focus:ring-2 focus:ring-cyan-500 outline-none" 
-              placeholder="Image URL" onChange={e => setForm({...form, image: e.target.value})} value={form.image} required />
-            <button type="submit" className="md:col-span-2 bg-gradient-to-r from-cyan-600 to-blue-700 p-3 rounded font-black hover:from-cyan-500 hover:to-blue-600 transition-all uppercase tracking-widest">
-              {isEditing ? "Execute Update" : "Initialize Upload"}
-            </button>
-            {isEditing && (
-              <button type="button" onClick={() => {setIsEditing(false); setForm({_id:'', name:'', price:'', image:'', shopeeLink:''})}} 
-                className="md:col-span-2 text-slate-400 underline text-sm">Cancel Edit</button>
-            )}
-          </form>
+    <div className="min-h-screen bg-black text-cyan-400 p-6 font-mono" style={{backgroundImage: 'linear-gradient(to right, #081216 1px, transparent 1px), linear-gradient(to bottom, #081216 1px, transparent 1px)', backgroundSize: '40px 40px'}}>
+      <div className="max-w-4xl mx-auto border-l border-r border-cyan-900/50 min-h-screen px-8">
+        <div className="flex justify-between items-end mb-10 pt-10 border-b border-cyan-500 pb-4">
+          <h1 className="text-4xl font-black italic">TECHTONIC COMMAND</h1>
+          <p className="text-sm font-bold bg-cyan-950 px-3 py-1 border border-cyan-500 rounded">BY LESLIE</p>
         </div>
 
-        {/* Inventory List */}
-        <h2 className="text-xl font-semibold mb-4 text-cyan-500">SYSTEM INVENTORY</h2>
-        <div className="grid gap-4">
+        <form onSubmit={handleSubmit} className="bg-slate-950 border border-cyan-500/30 p-6 rounded-sm mb-10 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+          <p className="text-xs uppercase mb-4 tracking-widest text-white">{isEditing ? "> Modifying Plate Data" : "> Initializing New Plate"}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="PRODUCT NAME" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
+            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="PRICE" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required />
+            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="SHOPEE URL" value={form.shopeeLink} onChange={e => setForm({...form, shopeeLink: e.target.value})} required />
+            <input className="bg-black border border-cyan-900 p-3 outline-none focus:border-cyan-400 text-white" placeholder="IMAGE URL" value={form.image} onChange={e => setForm({...form, image: e.target.value})} required />
+          </div>
+          <button type="submit" className="w-full mt-4 bg-cyan-500 text-black font-black py-3 hover:bg-white transition-colors">
+            {isEditing ? "UPDATE RECORDS" : "DEPLOY TO DATABASE"}
+          </button>
+        </form>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold italic mb-6">PLATE INVENTORY</h2>
           {products.map((p: any) => (
-            <div key={p._id} className="flex justify-between items-center bg-slate-900/50 border border-slate-800 p-4 rounded-lg">
-              <div>
-                <p className="font-bold text-slate-200">{p.name}</p>
-                <p className="text-sm text-cyan-600">{p.price}</p>
+            <div key={p._id} className="flex justify-between items-center bg-slate-950 border-l-4 border-cyan-700 p-4 hover:border-cyan-400 transition-all">
+              <span className="font-bold tracking-widest">{p.name}</span>
+              <div className="flex gap-4">
+                <button onClick={() => {setForm(p); setIsEditing(true);}} className="text-xs border border-cyan-900 px-4 py-1 hover:bg-cyan-900 transition text-white">EDIT</button>
+                <button onClick={() => deleteProduct(p._id)} className="text-xs border border-red-900 px-4 py-1 hover:bg-red-900 transition text-red-500">DELETE</button>
               </div>
-              <button onClick={() => startEdit(p)} className="bg-blue-900/30 text-blue-400 border border-blue-900 px-4 py-1 rounded hover:bg-blue-900 transition">
-                EDIT
-              </button>
             </div>
           ))}
         </div>

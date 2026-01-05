@@ -15,11 +15,19 @@ export async function POST(req: Request) {
   return NextResponse.json(newProduct);
 }
 
-// ADD THIS FOR EDITING
 export async function PUT(req: Request) {
   await dbConnect();
   const body = await req.json();
   const { _id, ...updateData } = body;
   const updatedProduct = await Product.findByIdAndUpdate(_id, updateData, { new: true });
   return NextResponse.json(updatedProduct);
+}
+
+// THE NEW DELETE FUNCTION
+export async function DELETE(req: Request) {
+  await dbConnect();
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  await Product.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Deleted successfully" });
 }
