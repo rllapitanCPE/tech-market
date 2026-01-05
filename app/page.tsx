@@ -37,7 +37,7 @@ export default function Home() {
                 
                 <a href={p.shopeeLink} target="_blank" className="relative inline-flex items-center justify-center w-full px-6 py-3 overflow-hidden font-bold text-white rounded-lg bg-slate-800 group/btn">
                   <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-cyan-500 rounded-full group-hover/btn:w-full group-hover/btn:h-56"></span>
-                  <span className="relative">DEPLOY TO SHOPEE</span>
+                  <span className="relative">ORDER NOW</span>
                 </a>
               </div>
             </div>
