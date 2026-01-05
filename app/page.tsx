@@ -8,26 +8,32 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white" style={{backgroundImage: 'radial-gradient(#1e293b 0.5px, transparent 0)', backgroundSize: '40px 40px'}}>
-      <nav className="p-10 border-b-2 border-cyan-500 bg-black/90 backdrop-blur-xl sticky top-0 z-50 flex flex-col md:flex-row justify-between items-center">
-        <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase">TECHTONIC</h1>
-        <div className="text-center md:text-right border-l-8 border-cyan-500 pl-8 mt-4 md:mt-0">
-          <p className="text-sm font-bold tracking-[0.6em] text-cyan-500 mb-2">CURATED BY</p>
-          <p className="text-5xl md:text-7xl font-black italic tracking-widest uppercase">LESLIE</p>
+    <main className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500">
+      {/* Sleek Professional Header */}
+      <nav className="p-8 border-b border-white/10 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <h1 className="text-4xl font-black italic tracking-tighter uppercase">
+          TECHTONIC <span className="text-cyan-400">SHOP</span>
+        </h1>
+        <div className="text-right">
+          <p className="text-[10px] tracking-[0.3em] text-gray-500 font-bold uppercase">Curated Systems</p>
+          <p className="text-xl font-black italic text-white uppercase tracking-wider">BY LESLIE</p>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+      <div className="max-w-6xl mx-auto p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {products.map((p: any) => (
-          <div key={p._id} className="bg-[#0a0a0a] rounded-[3.5rem] overflow-hidden border border-white/10 group hover:border-cyan-400 transition-all shadow-2xl">
-            <div className="aspect-square w-full overflow-hidden bg-slate-900">
-              <img src={p.image} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div key={p._id} className="bg-[#111] rounded-3xl overflow-hidden border border-white/5 group hover:border-cyan-500/50 transition-all shadow-2xl">
+            {/* 100% CLEAR IMAGE AREA */}
+            <div className="aspect-square bg-slate-900">
+              <img src={p.image} className="h-full w-full object-cover" alt={p.name} />
             </div>
-            <div className="p-10 bg-black">
-              <h2 className="text-2xl font-black uppercase mb-6 h-20 line-clamp-2 text-white group-hover:text-cyan-400">{p.name}</h2>
-              <div className="flex justify-between items-center pt-6 border-t border-white/5">
-                <span className="text-4xl font-black text-cyan-400">₱{p.price}</span>
-                <a href={p.shopeeLink} target="_blank" className="bg-white text-black px-10 py-4 rounded-2xl font-black text-xl hover:bg-cyan-500 transition-all uppercase">Check Out</a>
+            
+            {/* DATA PANEL BELOW IMAGE */}
+            <div className="p-6 space-y-4">
+              <h2 className="text-lg font-bold leading-tight uppercase h-14 overflow-hidden">{p.name}</h2>
+              <div className="flex justify-between items-center pt-4 border-t border-white/10">
+                <span className="text-2xl font-black text-cyan-400">₱{p.price}</span>
+                <a href={p.shopeeLink} target="_blank" className="bg-white text-black px-6 py-2 rounded-xl font-black text-sm hover:bg-cyan-400 transition-all uppercase">Check Out</a>
               </div>
             </div>
           </div>
