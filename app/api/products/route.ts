@@ -2,23 +2,24 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Product from '@/models/Product';
 
-export const dynamic = 'force-dynamic'; // Prevents Vercel from showing old/cached data
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   await dbConnect();
-  // Sort by _id -1 so the newest items you add appear first on top
-  const products = await Product.find({}).sort({ _id: -1 });
-  return NextResponse.json(products);
+  return NextResponse.json(await Product.find({}).sort({ _id: -1 }));
 }
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
     const body = await req.json();
+    // Auto-clean the price to ensure the Peso sign works
+    body.price = body.price.toString().replace(/[^\d.,]/g, '');
     const newProduct = await Product.create(body);
-    return NextResponse.json(newProduct, { status: 201 });
+    return NextResponse.json(newProduct);
   } catch (error) {
-    return NextResponse.json({ error: "Upload Failed" }, { status: 500 });
+    console.error("Database Error:", error);
+    return NextResponse.json({ error: "Auth Failure" }, { status: 500 });
   }
 }
 
@@ -30,7 +31,7 @@ export async function PUT(req: Request) {
     const updated = await Product.findByIdAndUpdate(_id, updateData, { new: true });
     return NextResponse.json(updated);
   } catch (error) {
-    return NextResponse.json({ error: "Update Failed" }, { status: 500 });
+    return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
 }
 
@@ -42,6 +43,6 @@ export async function DELETE(req: Request) {
     await Product.findByIdAndDelete(id);
     return NextResponse.json({ message: "Deleted" });
   } catch (error) {
-    return NextResponse.json({ error: "Delete Failed" }, { status: 500 });
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }
